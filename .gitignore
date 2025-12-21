@@ -1,0 +1,22 @@
+# Virtual environments
+venv/
+spark_venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# Spark / Hadoop
+spark-warehouse/
+_metastore_db/
+checkpoints/
+
+# Data outputs
+*.parquet
+*.snappy.parquet
+
+# Logs
+*.log
+
+# OS
+.DS_Store
