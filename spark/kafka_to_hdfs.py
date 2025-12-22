@@ -3,10 +3,11 @@ from pyspark.sql.functions import from_json, col
 from pyspark.sql.types import StructType, StructField, StringType, DoubleType
 
 spark = SparkSession.builder \
-    .appName("Kafka_AQI_To_HDFS") \
+    .appName("Kafka_AQI_To_HDFS_Batch") \
     .getOrCreate()
 
-# AQI JSON schema
+spark.sparkContext.setLogLevel("WARN")
+
 schema = StructType([
     StructField("city", StringType()),
     StructField("aqi", DoubleType()),
@@ -19,26 +20,22 @@ schema = StructType([
     StructField("timestamp", StringType())
 ])
 
-# Read from Kafka
-kafka_df = spark.readStream \
-    .format("kafka") \
-    .option("kafka.bootstrap.servers", "10.0.0.76:9092") \
-    .option("subscribe", "airquality.raw") \
-    .option("startingOffsets", "latest") \
-    .option("failOnDataLoss", "false") \
-    .load()
+# BATCH READ FROM KAFKA
+kafka_df = (
+    spark.read
+        .format("kafka")
+        .option("kafka.bootstrap.servers", "10.0.0.76:9092")
+        .option("subscribe", "airquality.raw")
+        .option("startingOffsets", "earliest")
+        .load()
+)
 
-# Parse JSON
 parsed_df = kafka_df.select(
     from_json(col("value").cast("string"), schema).alias("data")
 ).select("data.*")
 
-# Write to HDFS
-query = parsed_df.writeStream \
-    .format("parquet") \
-    .outputMode("append") \
-    .option("path", "/data/air/raw") \
-    .option("checkpointLocation", "/data/air/checkpoints/raw") \
-    .start()
+parsed_df.write \
+    .mode("append") \
+    .parquet("/data/air/raw")
 
-query.awaitTermination()
+spark.stop()
