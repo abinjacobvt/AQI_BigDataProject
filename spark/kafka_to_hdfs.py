@@ -17,10 +17,10 @@ schema = StructType([
     StructField("o3", DoubleType()),
     StructField("co", DoubleType()),
     StructField("so2", DoubleType()),
+    StructField("dominant_pol", StringType()),
     StructField("timestamp", StringType())
 ])
 
-# BATCH READ FROM KAFKA
 kafka_df = (
     spark.read
         .format("kafka")
@@ -39,3 +39,4 @@ parsed_df.write \
     .parquet("/data/air/raw")
 
 spark.stop()
+

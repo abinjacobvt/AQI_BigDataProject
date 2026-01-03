@@ -18,7 +18,10 @@ df = df.withColumn("event_date", to_date(col("timestamp")))
 # 3. Daily aggregation
 daily_df = (
     df.groupBy("event_date", "city")
-      .agg(avg("aqi").alias("avg_aqi"))
+      .agg(
+          avg("aqi").alias("avg_aqi"),
+          avg("pm25").alias("avg_pm25")
+      )
 )
 
 results = daily_df.collect()
@@ -30,11 +33,13 @@ client = InfluxDBClient(
     database="aqi_db"
 )
 
-# 5. Write idempotent points (1 per city per day)
 points = []
 
 for row in results:
     ts = datetime.strptime(str(row["event_date"]), "%Y-%m-%d")
+
+    avg_aqi = float(row["avg_aqi"]) if row["avg_aqi"] is not None else 0.0
+    avg_pm25 = float(row["avg_pm25"]) if row["avg_pm25"] is not None else 0.0
 
     points.append({
         "measurement": "daily_aqi",
@@ -43,7 +48,8 @@ for row in results:
         },
         "time": ts.strftime("%Y-%m-%dT00:00:00Z"),
         "fields": {
-            "avg_aqi": float(row["avg_aqi"])
+            "avg_aqi": avg_aqi,
+            "avg_pm25": avg_pm25
         }
     })
 

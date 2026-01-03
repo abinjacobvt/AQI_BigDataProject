@@ -12,10 +12,13 @@ TOPIC = "airquality.raw"
 
 API_TOKEN = "70ecec84dfc1b5f475745888b0ca12d143cbeae5"
 
+# Cities from different regions of France
 CITIES = {
     "Paris": "paris",
     "Lyon": "lyon",
-    "Marseille": "marseille"
+    "Marseille": "marseille",
+    "Lille": "lille",
+    "Toulouse": "toulouse"
 }
 
 # =========================
@@ -51,6 +54,7 @@ def fetch_aqi(city_name, city_query):
         "o3": iaqi.get("o3", {}).get("v"),
         "co": iaqi.get("co", {}).get("v"),
         "so2": iaqi.get("so2", {}).get("v"),
+        "dominant_pol": data["data"].get("dominentpol"),
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
