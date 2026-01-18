@@ -1,22 +1,50 @@
-# Virtual environments
+# Virtual Environments
 venv/
 spark_venv/
+.env
 
 # Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 
-# Spark / Hadoop
+# Spark
 spark-warehouse/
 _metastore_db/
 checkpoints/
+derby.log
+spark-events/
+*.jar
 
-# Data outputs
+# Hadoop / HDFS
+hadoop-data/
+namenode/
+datanode/
+dfs/
+tmp/
+
+# Kafka
+kafka-logs/
+zookeeper-data/
+__consumer_offsets/
+
+# InfluxDB
+influxdb-data/
+*.tsm
+*.wal
+
+# Data Outputs
 *.parquet
 *.snappy.parquet
+*.csv
 
 # Logs
 *.log
+logs/
 
-# OS
+# OS / IDE
 .DS_Store
+.idea/
+.vscode/
+*.swp
