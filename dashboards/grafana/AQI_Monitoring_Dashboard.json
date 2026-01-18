@@ -1,0 +1,184 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 1,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "uid": "df7op75g4ghdsa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": true,
+            "axisCenteredZero": false,
+            "axisColorMode": "series",
+            "axisLabel": "AQI",
+            "axisPlacement": "left",
+            "fillOpacity": 100,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "dashed+area"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.9,
+        "colorByField": "Value",
+        "fullHighlight": false,
+        "groupWidth": 0.92,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "orientation": "vertical",
+        "showValue": "auto",
+        "stacking": "none",
+        "text": {
+          "valueSize": 1
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "asc"
+        },
+        "xField": "Value",
+        "xTickLabelRotation": -10,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "alias": "AQI - $tag_city",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "city::tag"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "daily_aqi",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"avg_aqi\")\nFROM \"daily_aqi\"\nWHERE $timeFilter\nGROUP BY time(1d), \"city\"\n",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "avg_aqi"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "city::tag",
+              "operator": "=~",
+              "value": "/.*/"
+            }
+          ]
+        },
+        {
+          "alias": "PM2.5 - $tag_city",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "df7op75g4ghdsa"
+          },
+          "hide": true,
+          "query": "SELECT mean(\"avg_pm25\")\nFROM \"daily_aqi\"\nWHERE $timeFilter\nGROUP BY time(1d), \"city\"\n",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "Daily Average AQI Level in Major French Cities",
+      "type": "barchart"
+    }
+  ],
+  "preload": false,
+  "schemaVersion": 42,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "2025-12-29T18:30:00.000Z",
+    "to": "2026-01-06T18:29:59.000Z"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "AQI Monitoring Dashboard",
+  "uid": "ad72sls",
+  "version": 31
+}
